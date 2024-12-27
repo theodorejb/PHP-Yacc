@@ -31,7 +31,7 @@
             "@cs-fix",
             "@build-examples"
         ],
-        "build-examples": "php examples/rebuild.php",
+        "build-examples": "php examples/rebuild.php -k",
         "cs-fix": "php-cs-fixer fix -v ./lib",
         "test": "phpunit lib"
     }
