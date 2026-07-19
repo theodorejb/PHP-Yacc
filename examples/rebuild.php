@@ -38,12 +38,6 @@ function buildFolder(CliOptions $options, Generator $generator, string $dir) {
     $grammar = "grammar.y";
     $skeleton = "parser.template.php";
 
-    if ($options->runKmyacc) {
-        shell_exec("cd $dir && kmyacc -x -t -v -L php -m $skeleton -p Parser $grammar 2>&1");
-        rename("$dir/y.output", "$dir/y.kmyacc.output");
-        rename("$dir/grammar.php", "$dir/parser.kmyacc.php");
-    }
-
     $errorFile = fopen("php://stderr", "w");
     $debugFile = DEBUG ? fopen("$dir/y.phpyacc.output", 'w') : null;
     $context = new Context($grammar, $errorFile, $debugFile, VERBOSE_DEBUG);
@@ -55,24 +49,15 @@ function buildFolder(CliOptions $options, Generator $generator, string $dir) {
         "$dir/parser.phpyacc.php"
     );
 
-    shell_exec("cd $dir && diff -w parser.kmyacc.php parser.phpyacc.php > parser.diff");
-
-    shell_exec("cd $dir && diff -w y.kmyacc.output y.phpyacc.output > y.diff");
-
 }
 
 class CliOptions {
-    public $runKmyacc = false;
     public $args = [];
 
     public static function fromArgv(array $argv) {
         $options = new self;
         foreach (array_slice($argv, 1) as $arg) {
-            if ($arg === '-k') {
-                $options->runKmyacc = true;
-            } else {
-                $options->args[] = $arg;
-            }
+            $options->args[] = $arg;
         }
         return $options;
     }

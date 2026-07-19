@@ -30673,7 +30673,6 @@ state 920
 
 	.		reduce (281)
 
-grammar.y: there are  2 shift/reduce conflicts
 
 Statistics for grammar.y:
 	165 terminal symbols
