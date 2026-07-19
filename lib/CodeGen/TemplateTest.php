@@ -164,12 +164,8 @@ class TemplateTest extends TestCase
             $context->$flag = $value;
         }
 
-        $fp = fopen('php://memory', 'rw');
         $templateObj = new Template(new PHP(), $template, $context);
-        $templateObj->render(new CompressResult(), $fp);
-
-        rewind($fp);
-        $this->assertSame($expected, stream_get_contents($fp));
+        $this->assertSame($expected, $templateObj->render(new CompressResult()));
     }
 
     public function testEndifWithoutIfThrows(): void
@@ -183,7 +179,7 @@ class TemplateTest extends TestCase
         $templateObj = new Template(new PHP(), $template, $context);
 
         $this->expectException(TemplateException::class);
-        $templateObj->render(new CompressResult(), fopen('php://memory', 'rw'));
+        $templateObj->render(new CompressResult());
     }
 
     public function testUnterminatedIfThrows(): void
@@ -198,6 +194,6 @@ class TemplateTest extends TestCase
         $templateObj = new Template(new PHP(), $template, $context);
 
         $this->expectException(TemplateException::class);
-        $templateObj->render(new CompressResult(), fopen('php://memory', 'rw'));
+        $templateObj->render(new CompressResult());
     }
 }
