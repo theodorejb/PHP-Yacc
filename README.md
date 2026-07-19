@@ -56,7 +56,6 @@ A bunch of things. Here's the wishlist:
     * At least one of which generates an "AST" by default, similar to Ruby's [Treetop library](https://github.com/nathansobo/treetop)
  * Build a reasonably performant lexer-generator (very likely as a separate project)
  * A lot of debugging (though we don't know of any bugs, they are there)
- * Building out of features we didn't need for the initial go (for example, support for `%union`, etc).
 
 And a lot more.
 

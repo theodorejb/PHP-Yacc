@@ -152,6 +152,49 @@ class ParserTest extends TestCase
                 ],
             ],
 
+            [
+                <<<CODE
+                    %union {
+                        int i;
+                        char *s;
+                    }
+                    %token <i> T_NUMBER
+                    %type <s> expr
+                    %%
+                    expr: 
+                        T_NUMBER       { $$ = $1; }
+                    ;
+                    %%
+                    CODE, [
+                    "pureFlag" => false,
+                    "nsymbols" => 7,
+                    "nterminals" => 3,
+                    "nnonterminals" => 1,
+                    "ngrams" => 2,
+                    "unioned" => true,
+                    "union_body" => "\n    int i;\n    char *s;\n",
+                ], [
+                    "terminals" => [
+                        257 => "T_NUMBER",
+                    ],
+                    "nonterminals" => [
+                        "expr",
+                    ],
+                    "grams" => [
+                        [
+                            "action" => "",
+                            "empty" => false,
+                            "body" => [3, 4],
+                        ],
+                        [
+                            "action" => " m1(0,1,s) = m3(1,1,i); ",
+                            "empty" => false,
+                            "body" => [4, 2],
+                        ],
+                    ],
+                ],
+            ],
+
         ];
     }
 

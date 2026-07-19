@@ -83,7 +83,29 @@ class Parser
 
     protected function doUnion(): void
     {
-        throw new ParseException("doUnion() has not been implemented");
+        $t = $this->lexer->get();
+        if ($t->t !== '{') {
+            throw ParseException::unexpected($t, '{');
+        }
+        $tokens = [];
+        $ct = 0;
+        while (($t = $this->lexer->rawGet())->t !== '}' || $ct > 0) {
+            if ($t->t === EOF) {
+                throw ParseException::unexpected($t, '}');
+            }
+            switch ($t->t) {
+                case '{':
+                    $ct++;
+                    break;
+                case '}':
+                    $ct--;
+                    break;
+            }
+            $tokens[] = $t;
+        }
+        $this->context->union_body = implode('', array_map(function (Token $t): string {
+            return $t->v;
+        }, $tokens));
     }
 
     protected function doCopy(): void

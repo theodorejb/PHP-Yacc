@@ -152,7 +152,10 @@ class Template
                 } elseif ($this->metamatch($p, 'verification-table')) {
                     throw new TemplateException("verification-table is not implemented");
                 } elseif ($this->metamatch($p, 'union')) {
-                    throw new TemplateException("union is not implemented");
+                    if ($this->context->union_body !== null) {
+                        $this->language->write($buffer, $this->copy_header);
+                        $this->language->write($this->context->union_body, $this->copy_header);
+                    }
                 } elseif ($this->metamatch($p, 'tokenval')) {
                     $tokenmode = [
                         "enabled" => true,

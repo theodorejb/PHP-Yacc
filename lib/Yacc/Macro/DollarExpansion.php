@@ -93,7 +93,7 @@ class DollarExpansion extends MacroAbstract
                                         if ($type === null) {
                                             $type = $symbols[$v]->type;
                                         }
-                    if ($type === null /** && $ctx->unioned */ && false) {
+                    if ($type === null && $ctx->unioned) {
                         throw new ParseException("Type not defined for " . $symbols[$v]->name);
                     }
                     foreach ($this->parseDollar($ctx, $t, $v, $n, $type?->name) as $t) {
