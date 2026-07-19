@@ -38,7 +38,8 @@ class Template
         $this->language->begin($resultFile, $headerFile);
 
         $this->compress = $result;
-        $skipmode = false;
+        $skipStack = [];
+        $skipStackLines = [];
         $linechanged = false;
         $tailcode = false;
         $reducemode = [
@@ -58,9 +59,17 @@ class Template
                 $this->language->write($buffer . $line);
                 continue;
             }
+            $skipmode = !empty($skipStack) ? end($skipStack) : false;
             if ($skipmode) {
                 if ($this->metamatch(ltrim($line), 'endif')) {
-                    $skipmode = false;
+                    array_pop($skipStack);
+                    array_pop($skipStackLines);
+                } elseif ($this->metamatch(ltrim($line), 'if')) {
+                    $skipStack[] = true;
+                    $skipStackLines[] = $this->lineno;
+                } elseif ($this->metamatch(ltrim($line), 'ifnot')) {
+                    $skipStack[] = true;
+                    $skipStackLines[] = $this->lineno;
                 }
                 continue;
             }
@@ -197,11 +206,17 @@ class Template
                     $var = trim(substr($p, 9));
                     $this->gen_list_var($buffer, $var);
                 } elseif ($this->metamatch($p, 'ifnot')) {
-                    $skipmode = $skipmode || $this->evalCond($p);
+                    $skipStack[] = $this->evalCond($p);
+                    $skipStackLines[] = $this->lineno;
                 } elseif ($this->metamatch($p, 'if')) {
-                    $skipmode = $skipmode || !$this->evalCond($p);
+                    $skipStack[] = !$this->evalCond($p);
+                    $skipStackLines[] = $this->lineno;
                 } elseif ($this->metamatch($p, 'endif')) {
-                    $skipmode = false;
+                    if (empty($skipStack)) {
+                        throw new TemplateException("\$endif without matching \$if/\$ifnot on line {$this->lineno}");
+                    }
+                    array_pop($skipStack);
+                    array_pop($skipStackLines);
                 } else {
                     throw new TemplateException("Unknown \$: $line");
                 }
@@ -212,6 +227,11 @@ class Template
                 }
                 $this->language->write($buffer, $this->copy_header);
             }
+        }
+
+        if (!empty($skipStack)) {
+            $openLine = end($skipStackLines);
+            throw new TemplateException("Unterminated \$if/\$ifnot opened on line $openLine");
         }
 
         $this->language->commit();

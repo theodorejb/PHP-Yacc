@@ -222,6 +222,7 @@ class Lexer
         $this->prevIsDollar = false;
     }
 
+    /** @phpstan-impure */
     protected function getc(): string
     {
         if (null !== $this->backChar) {
