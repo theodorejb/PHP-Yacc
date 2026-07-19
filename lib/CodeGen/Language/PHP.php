@@ -13,31 +13,20 @@ use PhpYacc\CodeGen\Language;
 
 class PHP implements Language
 {
-    protected $fp;
-    protected $hp;
-
     protected string $fileBuffer = '';
-    protected string $headerBuffer = '';
 
-    public function begin($file, $headerFile): void
+    public function begin(): void
     {
-        $this->fp = $file;
-        $this->hp = $headerFile;
         $this->fileBuffer = '';
-        $this->headerBuffer = '';
     }
 
-    public function commit(): void
+    public function commit(): string
     {
         // Make sure there is exactly one trailing newline.
         $this->fileBuffer = rtrim($this->fileBuffer, "\n") . "\n";
-        $this->headerBuffer = rtrim($this->headerBuffer, "\n") . "\n";
-
-        fwrite($this->fp, $this->fileBuffer);
-        fwrite($this->hp, $this->headerBuffer);
-        $this->fp = $this->hp = null;
+        $result = $this->fileBuffer;
         $this->fileBuffer = '';
-        $this->headerBuffer = '';
+        return $result;
     }
 
     public function inline_comment(string $text): void
@@ -55,12 +44,9 @@ class PHP implements Language
         $this->fileBuffer .= sprintf("%scase %d: return %s;\n", $indent, $num, var_export($value, true));
     }
 
-    public function write(string $text, bool $includeHeader = false): void
+    public function write(string $text): void
     {
         $this->fileBuffer .= $text;
-        if ($includeHeader) {
-            $this->headerBuffer .= $text;
-        }
     }
 
     public function writeQuoted(string $text): void

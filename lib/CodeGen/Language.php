@@ -11,11 +11,11 @@ namespace PhpYacc\CodeGen;
 
 interface Language
 {
-    public function begin($file, $headerFile): void;
+    public function begin(): void;
 
-    public function commit(): void;
+    public function commit(): string;
 
-    public function write(string $text, bool $includeHeader = false): void;
+    public function write(string $text): void;
 
     public function writeQuoted(string $text): void;
 

@@ -18,7 +18,6 @@ class Template
     protected string $metachar = '$';
     protected array $template = [];
     protected int $lineno = 0;
-    protected bool $copy_header = false;
 
     protected Context $context;
     protected CompressResult $compress;
@@ -31,11 +30,9 @@ class Template
         $this->parseTemplate($template);
     }
 
-    public function render(CompressResult $result, $resultFile, $headerFile = null): void
+    public function render(CompressResult $result): string
     {
-        $headerFile = $headerFile ?: fopen('php://memory', 'rw');
-
-        $this->language->begin($resultFile, $headerFile);
+        $this->language->begin();
 
         $this->compress = $result;
         $skipStack = [];
@@ -151,19 +148,15 @@ class Template
                 if (trim($buffer) !== '') {
                     throw new TemplateException("Non-blank character before \$-keyword");
                 }
-                if ($this->metamatch($p, 'header')) {
-                    $this->copy_header = true;
-                } elseif ($this->metamatch($p, 'endheader')) {
-                    $this->copy_header = false;
-                } elseif ($this->metamatch($p, 'tailcode')) {
+                if ($this->metamatch($p, 'tailcode')) {
                     $tailcode = true;
                     continue;
                 } elseif ($this->metamatch($p, 'verification-table')) {
                     throw new TemplateException("verification-table is not implemented");
                 } elseif ($this->metamatch($p, 'union')) {
                     if ($this->context->union_body !== null) {
-                        $this->language->write($buffer, $this->copy_header);
-                        $this->language->write($this->context->union_body, $this->copy_header);
+                        $this->language->write($buffer);
+                        $this->language->write($this->context->union_body);
                     }
                 } elseif ($this->metamatch($p, 'tokenval')) {
                     $tokenmode = [
@@ -225,7 +218,7 @@ class Template
                 if ($linechanged) {
                     $linechanged = false;
                 }
-                $this->language->write($buffer, $this->copy_header);
+                $this->language->write($buffer);
             }
         }
 
@@ -234,7 +227,7 @@ class Template
             throw new TemplateException("Unterminated \$if/\$ifnot opened on line $openLine");
         }
 
-        $this->language->commit();
+        return $this->language->commit();
     }
 
     protected function evalCond($spec): bool
@@ -283,7 +276,7 @@ class Template
                 $result .= $p;
             }
         }
-        $this->language->write($result, $this->copy_header);
+        $this->language->write($result);
     }
 
     protected function gen_list_var(string $indent, string $var): void

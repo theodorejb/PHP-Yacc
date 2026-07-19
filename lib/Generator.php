@@ -34,6 +34,6 @@ class Generator
 
         $result = $this->compressor->compress($context);
 
-        $template->render($result, fopen($resultFile, 'w'));
+        file_put_contents($resultFile, $template->render($result));
     }
 }
