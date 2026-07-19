@@ -40,7 +40,7 @@ class ParserTest extends TestCase
                             "body" => [3, 4],
                         ],
                         [
-                            "action" => " m2(0,1) = 1; ",
+                            "action" => "m2(0,1) = 1;",
                             "empty" => false,
                             "body" => [4, 2],
                         ],
@@ -78,12 +78,12 @@ class ParserTest extends TestCase
                             "body" => [4, 5],
                         ],
                         [
-                            "action" => " m2(0,1) = 1; ",
+                            "action" => "m2(0,1) = 1;",
                             "empty" => false,
                             "body" => [5, 2],
                         ],
                         [
-                            "action" => " m2(0,1) = 2; ",
+                            "action" => "m2(0,1) = 2;",
                             "empty" => false,
                             "body" => [5, 3],
                         ],
@@ -129,22 +129,22 @@ class ParserTest extends TestCase
                             "body" => [7, 8],
                         ],
                         [
-                            "action" => " m2(0,1) = m4(1,1); ",
+                            "action" => "m2(0,1) = m4(1,1);",
                             "empty" => false,
                             "body" => [8, 6],
                         ],
                         [
-                            "action" => " m2(0,3) = m4(1,3) + m4(3,3); ",
+                            "action" => "m2(0,3) = m4(1,3) + m4(3,3);",
                             "empty" => false,
                             "body" => [8, 8, 2, 8],
                         ],
                         [
-                            "action" => " m2(0,3) = m4(1,3) - m4(3,3); ",
+                            "action" => "m2(0,3) = m4(1,3) - m4(3,3);",
                             "empty" => false,
                             "body" => [8, 8, 3, 8],
                         ],
                         [
-                            "action" => " { m2(0,3) = (m4(2,3)); } ",
+                            "action" => "{ m2(0,3) = (m4(2,3)); }",
                             "empty" => false,
                             "body" => [8, 4, 8, 5],
                         ],
@@ -187,7 +187,7 @@ class ParserTest extends TestCase
                             "body" => [3, 4],
                         ],
                         [
-                            "action" => " m1(0,1,s) = m3(1,1,i); ",
+                            "action" => "m1(0,1,s) = m3(1,1,i);",
                             "empty" => false,
                             "body" => [4, 2],
                         ],

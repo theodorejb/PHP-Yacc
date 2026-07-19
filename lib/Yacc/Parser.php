@@ -58,9 +58,7 @@ class Parser
             $tokens[] = $t;
         }
         $expanded = $this->macros->apply($this->context, $symbols, $tokens, $n, $attribute);
-        return implode('', array_map(function (Token $t) {
-            return $t->v;
-        }, $expanded));
+        return trim(implode('', array_map(static fn(Token $t) => $t->v, $expanded)));
     }
 
     protected function doType(): void
